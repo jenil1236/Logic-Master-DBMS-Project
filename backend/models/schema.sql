@@ -36,7 +36,7 @@ CREATE TABLE test (
     numberOfQues INT UNSIGNED NOT NULL,
     eachQuesMarks INT UNSIGNED NOT NULL,
     -- totalMarks INT GENERATED ALWAYS AS (numberOfQues * eachQuesMarks) STORED -- derived attribute
-    totalMarks INT UNSIGNED NOT NULL,
+    totalMarks INT UNSIGNED NOT NULL
 );
 
 CREATE TABLE test_has_ques (
@@ -51,7 +51,7 @@ CREATE TABLE result(
     id INT AUTO_INCREMENT PRIMARY KEY,
     userid INT NOT NULL,
     testid INT NOT NULL,
-    score INT UNSIGNED,
+    score INT UNSIGNED DEFAULT 0,
     FOREIGN KEY (testid) REFERENCES test(id),
     FOREIGN KEY (userid) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE(userid,testid)
@@ -61,6 +61,7 @@ CREATE TABLE submission (
     resultid INT NOT NULL,
     questionid INT NOT NULL,
     selected ENUM('A', 'B', 'C', 'D'),
+    status BOOLEAN NOT NULL,
     PRIMARY KEY (resultid, questionid),
     FOREIGN KEY (resultid) REFERENCES result(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (questionid) REFERENCES question(id)
@@ -70,30 +71,39 @@ CREATE TABLE admin (
     id INT AUTO_INCREMENT PRIMARY KEY,
     adminUserName VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
-)
+);
 
 -- CREATING TRIGGERS
+DELIMITER $$
+
 CREATE TRIGGER update_score_after_submission
 AFTER INSERT ON submission
 FOR EACH ROW
 BEGIN
-    DECLARE correctAnswer ENUM('A','B','C','D');
+    DECLARE marks INT;
+    DECLARE testId INT;
 
-    SELECT answer INTO correctAnswer
-    FROM question WHERE id = NEW.questionid;
+    -- Only add to score if the submission was correct
+    IF NEW.status = TRUE THEN
+        -- Get the test id for this result
+        SELECT testid INTO testId
+        FROM result
+        WHERE id = NEW.resultid;
 
-    IF NEW.selected = correctAnswer THEN
+        -- Get the marks for each question from the test
+        SELECT eachQuesMarks INTO marks
+        FROM test
+        WHERE id = testId;
+
+        -- Update the score in result table
         UPDATE result
-        SET score = score + (
-            SELECT eachQuesMarks FROM test
-            WHERE id = (SELECT testid FROM result WHERE id = NEW.resultid)
-        )
+        SET score = score + marks
         WHERE id = NEW.resultid;
     END IF;
-END;
+END$$
+DELIMITER ;
 
 DELIMITER $$
-
 CREATE TRIGGER calculate_totalmarks_before_insert
 BEFORE INSERT ON test
 FOR EACH ROW
@@ -102,3 +112,5 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+

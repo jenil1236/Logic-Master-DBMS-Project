@@ -15,9 +15,9 @@ import setupPassport from "./config/passport.js";
 import authRoutes from "./routes/AuthRoutes.js";
 import adminRoutes from "./routes/AdminRoutes.js";
 import submissionRoutes from "./routes/SubmissionRoutes.js";
-import testRoutes from "./routes/TestRoutes.js";
-import announcementRoutes from "./routes/AnnouncementRoutes.js";
-import otherRoutes from "./routes/OtherRoutes.js";
+// import testRoutes from "./routes/TestRoutes.js";
+// import announcementRoutes from "./routes/AnnouncementRoutes.js";
+// import otherRoutes from "./routes/OtherRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,12 +46,12 @@ app.use(passport.session());
 setupPassport(passport);
 
 // ----------------- Routes -----------------
-app.use("/api", otherRoutes);
+// app.use("/api", otherRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/submission", submissionRoutes);
-app.use("/api/test", testRoutes);
-app.use("/api/announcement", announcementRoutes);
+// app.use("/api/test", testRoutes);
+// app.use("/api/announcement", announcementRoutes);
 
 // app.get("/leaderboard", isAdmin, async (req, res) => {
 //     try {

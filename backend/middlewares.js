@@ -1,5 +1,5 @@
 // middleware.js
-export default function isAuthenticated(req, res, next) {
+export const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
   res.status(401).send({ error: "Unauthorized" });
 }
@@ -25,4 +25,25 @@ export const isAdmin = (req, res, next) => {
         return next();
     req.flash('error', 'You are not authorized');
     res.redirect('/');
+}
+
+export const checkValidity = async (req, res, next) => {
+    let { id } = req.params;
+    let test = await Test.findById(id);
+    let currentTime = new Date(
+        new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+    let { startTime, endTime } = test;
+    if (currentTime < startTime) {
+        // console.log(currentTime, startTime, endTime); 
+        req.flash("error", "The test cannot be started!");
+        return res.redirect("/");
+    }
+    else if (currentTime > endTime) {
+        req.flash("error", "The test is completed!");
+        return res.redirect("/");
+    }
+    else {
+        next();
+    }
 }
