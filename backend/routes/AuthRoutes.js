@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { registerUser, loginUser, login_fail, logoutUser } from "../controllers/Auth.js";
+import { registerUser, loginUser, login_fail, logoutUser, checkAuth } from "../controllers/Auth.js";
 
 const router = express.Router();
 
@@ -12,20 +12,26 @@ router
     .post("/login", loginUser)
 
     // Google OAuth
-    .get("auth/google", passport.authenticate("google", { scope: ["profile", "email"] }))
+    .get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
 
-    .get("/auth/google/callback",
-        passport.authenticate("google", { failureRedirect: "/login-failure" }),
+    // In /routes/AuthRoutes.js - update Google callback
+    .get("/google/callback",
+        passport.authenticate("google", {
+            failureRedirect: "http://localhost:5173/login?error=auth_failed"
+        }),
         (req, res) => {
-            // redirect to frontend
+            // Successful authentication
             res.redirect("http://localhost:5173");
         }
     )
-
     // Login failure
     .get("/login-failure", login_fail)
 
     // Logout
-    .get("/logout", logoutUser);
+    .get("/logout", logoutUser)
+
+    // Add to /routes/AuthRoutes.js
+    .get("/check", checkAuth);
+
 
 export default router;

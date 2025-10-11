@@ -1,8 +1,7 @@
 // import express from "express";
 // const router = express.Router();
 
-// import {isAuthenticated} from "../middlewares.js";
-// import { checkValidity, checkSubmit, isAdmin } from "../middlewares.js";
+// import { checkValidity, checkSubmit, isAdmin,isAuthenticated } from "../middlewares.js";
 // import { showTestForm, createTest, deleteTest, testEditForm, updateTest } from "../controllers/Test.js";
 
 // router.get("/:id/:user_id", isAuthenticated, checkValidity, checkSubmit, attempTest);

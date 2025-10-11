@@ -27,8 +27,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: "http://localhost:5173", // your React/Vite frontend
-  credentials: true
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["*"],
+  allowedHeaders: ["*"]
 }));
 
 app.use(session({
@@ -111,13 +113,19 @@ app.use("/api/submission", submissionRoutes);
 // });
 
 // Error Handler
+// In app.js - replace the error handler
 app.use((err, req, res, next) => {
     let { status = 500, message = "Sorry! Some error occurred." } = err;
     err.status = status;
     err.message = message;
-    res.status(status).render("error", { err });
-});
-//.......
+    
+    // Send JSON response instead of trying to render a view
+    res.status(status).json({ 
+        error: true,
+        message: err.message,
+        status: status
+    });
+});//.......
 
 // Page not found error as middleware
 app.use((req, res) => {

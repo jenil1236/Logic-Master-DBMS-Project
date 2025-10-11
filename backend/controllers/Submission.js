@@ -1,10 +1,10 @@
-import pool from "../config/db.js";
+// import pool from "../config/db.js";
 
 // export const getSubmission = async (req, res) => {
 //     // console.log('called get');
 //     const testId = req.params.id;
 //     const test = await Test.findById(testId).populate('questions');
-//     const user = await User.findById(req.user._id);z
+//     const user = await User.findById(req.user._id);
 //     const submission = user.submissions.find(s => s.test_id.equals(testId));
 //     // console.log(submission);
 //     res.render("submission", { test, submission, page: "submission" });
