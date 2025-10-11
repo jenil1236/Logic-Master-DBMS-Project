@@ -1,61 +1,63 @@
-// import express from "express";
-// import pool from "../config/db.js";
+import express from "express";
+import pool from "../config/db.js";
 // // import xlsx from "xlsx";
 // // import schedule from "node-schedule";
 // // import { io } from "../app.js";
-// import { isAdmin, isAuthenticated } from "../middlewares.js";
-// const router = express.Router();
+import { isAuthenticated } from "../middlewares.js";
+const router = express.Router();
 
-// router.get("/history", isAuthenticated, async (req, res) => {
-//     try {
-//         const userId = req.user._id;
+router.get("/history", isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", userId);
+        // console.log(req.user);
+        
+        // 1️ Get all results for this user
+        const q1 = `
+            SELECT r.id AS resultId, r.testid, r.score, t.testName, t.totalMarks, t.startTime
+            FROM result r
+            JOIN test t ON r.testid = t.id
+            WHERE r.userid = ?
+            ORDER BY r.id DESC
+        `;
+        const [results] = await pool.execute(q1, [userId]);
 
-//         // 1️ Get all results for this user
-//         const q1 = `
-//             SELECT r.id AS resultId, r.testid, r.score, t.testName, t.totalMarks, t.startTime
-//             FROM result r
-//             JOIN test t ON r.testid = t.id
-//             WHERE r.userid = ?
-//             ORDER BY r.id DESC
-//         `;
-//         const [results] = await pool.execute(q1, [userId]);
+        const history = [];
 
-//         const history = [];
+        for (const r of results) {
+            // 2️ Get all questions for this test, LEFT JOIN with submissions
+            const q2 = `
+                SELECT 
+                    q.id AS questionId, 
+                    q.question, 
+                    s.selected, 
+                    s.status
+                FROM test_has_ques thq
+                JOIN question q ON thq.questionid = q.id
+                LEFT JOIN submission s 
+                    ON s.questionid = q.id AND s.resultid = ?
+                WHERE thq.testid = ?
+                ORDER BY q.id
+            `;
+            const [subs] = await pool.execute(q2, [r.resultId, r.testid]);
 
-//         for (const r of results) {
-//             // 2️ Get all questions for this test, LEFT JOIN with submissions
-//             const q2 = `
-//                 SELECT 
-//                     q.id AS questionId, 
-//                     q.question, 
-//                     s.selected, 
-//                     s.status
-//                 FROM test_has_ques thq
-//                 JOIN question q ON thq.questionid = q.id
-//                 LEFT JOIN submission s 
-//                     ON s.questionid = q.id AND s.resultid = ?
-//                 WHERE thq.testid = ?
-//                 ORDER BY q.id
-//             `;
-//             const [subs] = await pool.execute(q2, [r.resultId, r.testid]);
+            history.push({
+                resultId: r.resultId,
+                testId: r.testid,
+                testName: r.testName,
+                totalMarks: r.totalMarks,
+                score: r.score,
+                startTime: r.startTime,
+                submissions: subs
+            });
+        }
 
-//             history.push({
-//                 resultId: r.resultId,
-//                 testId: r.testid,
-//                 testName: r.testName,
-//                 totalMarks: r.totalMarks,
-//                 score: r.score,
-//                 startTime: r.startTime,
-//                 submissions: subs
-//             });
-//         }
-
-//         res.status(200).json({ history });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ message: "Server error" });
-//     }
-// });
+        res.status(200).json({ history });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 
 
 
@@ -339,4 +341,4 @@
 //     res.render("dashboard.ejs", { allAnnouncements, allTests });
 // });
 
-// export default router;
+export default router;

@@ -1,0 +1,384 @@
+/* History.css - Fixed version without global style conflicts */
+.history-page {
+  --primary-color: #4361ee;
+  --primary-light: #4895ef;
+  --secondary-color: #3f37c9;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --light-bg: #f8f9fa;
+  --dark-text: #333;
+  --light-text: #6c757d;
+  --border-color: #e0e0e0;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Only target elements within history-page class */
+.history-page .history-container {
+  /* max-width: 1000px; */
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--dark-text);
+  background-color: #f5f7fb;
+  min-height: 100vh;
+}
+
+.history-page .history-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.history-page .history-header h1 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.history-page .history-header p {
+  font-size: 1.1rem;
+  color: var(--light-text);
+}
+
+.history-page .loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.history-page .spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(67, 97, 238, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.history-page .error-message {
+  text-align: center;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.history-page .error-message h2 {
+  color: var(--error-color);
+  margin-bottom: 1rem;
+}
+
+.history-page .error-message button {
+  margin-top: 1rem;
+  padding: 0.7rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.history-page .error-message button:hover {
+  background-color: var(--secondary-color);
+}
+
+.history-page .empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.history-page .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.history-page .empty-state h2 {
+  margin-bottom: 1rem;
+  color: var(--dark-text);
+}
+
+.history-page .empty-state p {
+  margin-bottom: 2rem;
+  color: var(--light-text);
+}
+
+.history-page .primary-btn {
+  padding: 0.8rem 2rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.history-page .primary-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+.history-page .history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.history-page .history-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.history-page .history-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.history-page .history-card.expanded {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.history-page .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.history-page .test-info h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark-text);
+}
+
+.history-page .test-date {
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
+
+.history-page .score-circle {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--score-color) 0% var(--score-percentage),
+    #e0e0e0 var(--score-percentage) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-page .score-circle::before {
+  content: '';
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.history-page .score-text, 
+.history-page .score-percentage {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.history-page .score-text {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.history-page .score-percentage {
+  font-size: 0.8rem;
+  color: var(--light-text);
+}
+
+.history-page .card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.history-page .view-submission-btn, 
+.history-page .toggle-details-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.history-page .view-submission-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.history-page .view-submission-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+.history-page .toggle-details-btn {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.history-page .toggle-details-btn:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+.history-page .card-details {
+  padding: 1.5rem;
+}
+
+.history-page .card-details h4 {
+  margin-bottom: 1rem;
+  color: var(--dark-text);
+}
+
+.history-page .submissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.history-page .submission-item {
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--light-bg);
+}
+
+.history-page .question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.history-page .question-number {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.history-page .status-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.history-page .question-text {
+  margin-bottom: 0.5rem;
+}
+
+.history-page .selected-answer {
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 5px;
+  border-left: 3px solid var(--primary-light);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .history-page .history-container {
+    padding: 1rem;
+  }
+  
+  .history-page .history-header h1 {
+    font-size: 2rem;
+  }
+  
+  .history-page .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .history-page .score-info {
+    align-self: flex-end;
+  }
+  
+  .history-page .card-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .history-page .view-submission-btn, 
+  .history-page .toggle-details-btn {
+    width: 100%;
+  }
+}
+
+/* Add this to your History.css */
+.history-page .view-submission-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.history-page .button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: buttonSpin 1s linear infinite;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+@keyframes buttonSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.history-page .view-submission-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+
+
+/* Update status badge styles to use background-color instead of class-based colors */
+.history-page .status-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  background-color: #ff9800; /* Default color for not attempted */
+}
+/* Ensure text is readable on all background colors */
+.history-page .status-badge {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}

@@ -5,7 +5,7 @@ export const isAuthenticated = (req, res, next) => {
 }
 
 // export const checkSubmit = async (req, res, next) => {
-//     const id = req.user._id;
+//     const id = req.user.id;
 //     const user = await User.findById(id);
 //     const testId = req.params.id;
 //     if (user) {

@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import AuthPage from "./pages/AuthPage";
 import AdminLogin from "./pages/AdminLogin";
 import Homepage from "./pages/Homepage";
+import Submission from "./pages/SubmissionPage";
+import History from "./pages/History";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -63,9 +65,10 @@ function App() {
             element={<Homepage user={user} onLogout={handleLogout} />}
           />
           <Route path="/test" element={<div>Test Page</div>} />
-          <Route path="/history" element={<div>History Page</div>} />
-          <Route path="/submission/:id" element={<div>Submission Page</div>} />
+          {/* <Route path="/history" element={<div>History Page</div>} /> */}
+          <Route path="/submission/:testId" element={<Submission user={user} onLogout={handleLogout}/>}/>
           <Route path="/contact" element={<div>Contact Page</div>} />
+          <Route path="/history" element={<History user={user} onLogout={handleLogout}/>} />
           <Route 
             path="/login" 
             element={user ? <Homepage user={user} onLogout={handleLogout} /> : <AuthPage onLogin={handleLogin} />} 
