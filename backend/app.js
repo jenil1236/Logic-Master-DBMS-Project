@@ -17,7 +17,7 @@ import adminRoutes from "./routes/AdminRoutes.js";
 import submissionRoutes from "./routes/SubmissionRoutes.js";
 import testRoutes from "./routes/TestRoutes.js";
 import announcementRoutes from "./routes/AnnouncementRoutes.js";
-// import otherRoutes from "./routes/OtherRoutes.js";
+import otherRoutes from "./routes/OtherRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -50,7 +50,7 @@ app.use(passport.session());
 setupPassport(passport);
 
 // ----------------- Routes -----------------
-// app.use("/api", otherRoutes);
+app.use("/api", otherRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/submission", submissionRoutes);

@@ -207,112 +207,72 @@ export const deleteTest = async (req, res) => {
 };
 
 
-// export const getAllTests = async (req, res) => {
-//   try {
-//     console.log("getAllTests")
-//     const [rows] = await pool.query(
-//       `SELECT 
-//         id,
-//         testName,
-//         startTime,
-//         duration,
-//         numberOfQues,
-//         eachQuesMarks,
-//         totalMarks,
-//         TIMESTAMPDIFF(MINUTE, NOW(), startTime) as minutesUntilStart,
-//         CASE 
-//           WHEN NOW() < startTime THEN 'upcoming'
-//           WHEN NOW() BETWEEN startTime AND DATE_ADD(startTime, INTERVAL duration MINUTE) THEN 'active'
-//           ELSE 'completed'
-//         END as status
-//       FROM test 
-//       ORDER BY startTime DESC`
-//     );
-//     console.log("getallTests",rows)
-//     res.status(200).json({
-//       success: true,
-//       count: rows.length,
-//       data: rows
-//     });
-//   } catch (err) {
-//     console.error('Error fetching tests:', err);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Server Error while fetching tests'
-//     });
-//   }
-// };
+// 📘 Validate test timing and start test
+export const validateTestStart = async (req, res) => {
+  try {
+    const { testId } = req.body;
+    const userId = req.user?.id;
 
-// // POST /api/tests/give
-// export const startTest = async (req, res) => {
-//   try {
-//     const { userId, testId } = req.body;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
+
+    // Get test details
+    const [testRows] = await pool.query('SELECT * FROM test WHERE id = ?', [testId]);
     
-//     // Check if test exists and is accessible
-//     const [testRows] = await pool.query(
-//       'SELECT * FROM test WHERE id = ?',
-//       [testId]
-//     );
+    if (testRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Test not found'
+      });
+    }
 
-//     if (testRows.length === 0) {
-//       return res.status(404).json({
-//         success: false,
-//         message: 'Test not found'
-//       });
-//     }
+    const test = testRows[0];
+    const now = new Date();
+    const startTime = new Date(test.startTime);
+    const endTime = new Date(startTime.getTime() + test.duration * 60000);
 
-//     const test = testRows[0];
-//     const now = new Date();
-//     const startTime = new Date(test.startTime);
-    
-//     // Check if test has started
-//     if (now < startTime) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Test has not started yet'
-//       });
-//     }
+    // Check if test is within valid time window
+    if (now < startTime) {
+      return res.status(400).json({
+        success: false,
+        message: 'Test has not started yet'
+      });
+    }
 
-//     // Check if test is still active
-//     const endTime = new Date(startTime.getTime() + test.duration * 60000);
-//     if (now > endTime) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Test has ended'
-//       });
-//     }
+    if (now > endTime) {
+      return res.status(400).json({
+        success: false,
+        message: 'Test has ended'
+      });
+    }
 
-//     // Check if user has already attempted the test
-//     const [attemptRows] = await pool.query(
-//       'SELECT * FROM test_attempts WHERE user_id = ? AND test_id = ?',
-//       [userId, testId]
-//     );
+    // Check if user has already submitted for this test
+    const [submissionRows] = await pool.query(
+      'SELECT * FROM result WHERE userid = ? AND testid = ?',
+      [userId, testId]
+    );
 
-//     if (attemptRows.length > 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'You have already attempted this test'
-//       });
-//     }
+    if (submissionRows.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have already attempted this test'
+      });
+    }
 
-//     // Return success with test details
-//     res.status(200).json({
-//       success: true,
-//       message: 'Test can be started',
-//       data: {
-//         testId: test.id,
-//         testName: test.testName,
-//         duration: test.duration,
-//         totalQuestions: test.numberOfQues,
-//         totalMarks: test.totalMarks
-//       }
-//     });
+    res.status(200).json({
+      success: true,
+      message: 'ok'
+    });
 
-//   } catch (err) {
-//     console.error('Error starting test:', err);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Server Error while starting test'
-//     });
-//   }
-// };
+  } catch (err) {
+    console.error('Error validating test start:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while validating test'
+    });
+  }
+};

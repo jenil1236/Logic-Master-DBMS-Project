@@ -75,31 +75,17 @@ CREATE TABLE admin (
 
 -- CREATING TRIGGERS
 DELIMITER $$
-
 CREATE TRIGGER update_score_after_submission
 AFTER INSERT ON submission
 FOR EACH ROW
 BEGIN
-    DECLARE marks INT;
-    DECLARE testId INT;
-
-    -- Only add to score if the submission was correct
-    IF NEW.status = TRUE THEN
-        -- Get the test id for this result
-        SELECT testid INTO testId
-        FROM result
-        WHERE id = NEW.resultid;
-
-        -- Get the marks for each question from the test
-        SELECT eachQuesMarks INTO marks
-        FROM test
-        WHERE id = testId;
-
-        -- Update the score in result table
-        UPDATE result
-        SET score = score + marks
-        WHERE id = NEW.resultid;
-    END IF;
+  -- Only update if the submitted answer is correct
+  IF NEW.status = 1 THEN
+    UPDATE result r
+    JOIN test t ON r.testid = t.id
+    SET r.score = IFNULL(r.score, 0) + IFNULL(t.eachQuesMarks, 0)
+    WHERE r.id = NEW.resultid;
+  END IF;
 END$$
 DELIMITER ;
 

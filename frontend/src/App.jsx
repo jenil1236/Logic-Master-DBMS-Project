@@ -8,6 +8,9 @@ import Homepage from "./pages/Homepage";
 import NotFound from "./pages/NotFound";
 import TestsPage from "./pages/TestsPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
+import Submission from "./pages/SubmissionPage";
+import History from "./pages/History";
+import TakeTest from "./pages/TakeTest";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -97,11 +100,13 @@ function App() {
             path="/announcements"
             element={<AnnouncementsPage user={user} onLogout={handleLogout}/>}
           />
-          <Route path="/history" element={<div>History Page</div>} />
+          <Route path="/test/:userid/:testid" element={<TakeTest user={user} />} />
+          <Route path="/submission/:testId" element={<Submission user={user} onLogout={handleLogout}/>}/>
           <Route path="/contact" element={<div>Contact Page</div>} />
-          <Route
-            path="/login"
-            element={user ? <Homepage user={user} onLogout={handleLogout} /> : <AuthPage onLogin={handleLogin} />}
+          <Route path="/history" element={<History user={user} onLogout={handleLogout}/>} />
+          <Route 
+            path="/login" 
+            element={user ? <Homepage user={user} onLogout={handleLogout} /> : <AuthPage onLogin={handleLogin} />} 
           />
           <Route
             path="/signup"

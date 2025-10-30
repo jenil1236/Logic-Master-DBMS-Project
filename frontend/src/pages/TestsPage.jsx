@@ -46,7 +46,7 @@ function TestsPage({ user,onLogout }) {
     setStartingTest(testId);
     
     try {
-      const res = await fetch('/api/tests/give', {
+      const res = await fetch('/api/test/give', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,17 +59,57 @@ function TestsPage({ user,onLogout }) {
 
       const data = await res.json();
       
-      if (data.success) {
+      if (data.success && data.message === 'ok') {
         // Redirect to test interface
-        navigate(`/test/${testId}`);
+        navigate(`/test/${user.id}/${testId}`);
       } else {
-        setError(data.message || 'Cannot start test');
+        // Show toast message and navigate back to /test
+        showToast(data.message || 'The test cannot be started');
+        navigate('/test');
       }
     } catch (err) {
-      setError('Error starting test');
+      showToast('The test cannot be started');
+      navigate('/test');
     } finally {
       setStartingTest(null);
     }
+  };
+
+  const showToast = (message) => {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #f44336;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 4px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease-out;
+    `;
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+      toast.remove();
+      style.remove();
+    }, 3000);
   };
 
   const formatDateTime = (dateTimeString) => {
