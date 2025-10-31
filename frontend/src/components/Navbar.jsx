@@ -81,14 +81,14 @@ const Navbar = ({ user, onLogout }) => {
                         <i className="fas fa-history"></i>
                         History
                     </Link>
-                    <Link
+                    {/* <Link
                         to="/contact"
                         className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}
                         onClick={() => setIsMenuOpen(false)}
                     >
                         <i className="fas fa-envelope"></i>
                         Contact Us
-                    </Link>
+                    </Link> */}
                 </div>
 
                 {/* Auth Section */}

@@ -144,7 +144,7 @@ const Submission = ({ user, onLogout }) => {
           <button onClick={handleBackToHistory} className="back-button">
             ← Back to History
           </button>
-          <div className="header-content">
+          <div className="sub-header-content">
             <h1>Test Submission Details</h1>
             {testInfo && (
               <div className="test-summary">

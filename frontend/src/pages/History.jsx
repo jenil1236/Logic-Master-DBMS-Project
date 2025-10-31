@@ -188,12 +188,12 @@ const History = ({user, onLogout}) => {
                         <div key={submission.questionId} className="submission-item">
                           <div className="question-header">
                             <span className="question-number">Q{index + 1}</span>
-                            <span 
+                            {/* <span 
                               className="status-badge"
                               style={{ backgroundColor: getStatusColor(submission.status) }}
                             >
                               {getStatusText(submission.status)}
-                            </span>
+                            </span> */}
                           </div>
                           <p className="question-text">{submission.question}</p>
                           {submission.selected && (

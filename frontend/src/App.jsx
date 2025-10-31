@@ -102,7 +102,7 @@ function App() {
           />
           <Route path="/test/:userid/:testid" element={<TakeTest user={user} />} />
           <Route path="/submission/:testId" element={<Submission user={user} onLogout={handleLogout}/>}/>
-          <Route path="/contact" element={<div>Contact Page</div>} />
+          {/* <Route path="/contact" element={<div>Contact Page</div>} /> */}
           <Route path="/history" element={<History user={user} onLogout={handleLogout}/>} />
           <Route 
             path="/login" 
