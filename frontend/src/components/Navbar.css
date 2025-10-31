@@ -122,7 +122,7 @@
 }
 
 .login-btn, .signup-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 0.75rem;
   border-radius: 12px;
   text-decoration: none;
   font-weight: 600;

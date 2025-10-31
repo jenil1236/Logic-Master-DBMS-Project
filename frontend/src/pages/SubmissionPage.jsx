@@ -52,9 +52,9 @@ const Submission = ({ user, onLogout }) => {
   }, [testId]);
 
   const calculateScore = () => {
-    if (!submissionData) return 0;
-    return submissionData.filter(sub => sub.status === 1).length;
-  };
+  if (!submissionData || !testInfo) return 0;
+  return submissionData.filter(sub => sub.status === 1).length * testInfo.eachQuesMarks;
+};
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -72,30 +72,26 @@ const Submission = ({ user, onLogout }) => {
     }
   };
 
-
-
-  const getSelectedOptionText = (submission) => {
-    if (!submission.selected) return 'Not Attempted';
-
-    // Convert letter to option text
-    switch (submission.selected) {
-      case 'A': return `A. ${submission.option1}`;
-      case 'B': return `B. ${submission.option2}`;
-      case 'C': return `C. ${submission.option3}`;
-      case 'D': return `D. ${submission.option4}`;
-      default: return 'Not Attempted';
+  const getOptionLabel = (optionKey) => {
+    switch (optionKey) {
+      case 'A': return 'option1';
+      case 'B': return 'option2';
+      case 'C': return 'option3';
+      case 'D': return 'option4';
+      default: return '';
     }
   };
 
+  const getSelectedOptionText = (submission) => {
+    if (!submission.selected) return 'Not Attempted';
+    
+    const optionField = getOptionLabel(submission.selected);
+    return submission[optionField] || `Option ${submission.selected}`;
+  };
+
   const getCorrectOptionText = (submission) => {
-    // Convert letter to option text
-    switch (submission.answer) {
-      case 'A': return `A. ${submission.option1}`;
-      case 'B': return `B. ${submission.option2}`;
-      case 'C': return `C. ${submission.option3}`;
-      case 'D': return `D. ${submission.option4}`;
-      default: return 'Unknown';
-    }
+    const optionField = getOptionLabel(submission.answer);
+    return submission[optionField] || `Option ${submission.answer}`;
   };
 
   const handleBackToHistory = () => {
@@ -161,13 +157,13 @@ const Submission = ({ user, onLogout }) => {
                   <div className="stat">
                     <span className="stat-label">Score:</span>
                     <span className="stat-value score">
-                      {calculateScore()} / {submissionData?.length || 0}
+                      {calculateScore()} / {testInfo.totalMarks}
                     </span>
                   </div>
                   <div className="stat">
                     <span className="stat-label">Percentage:</span>
                     <span className="stat-value percentage">
-                      {((calculateScore() / (submissionData?.length || 1)) * 100).toFixed(1)}%
+                      {((calculateScore() / (testInfo.totalMarks)) * 100).toFixed(1)}%
                     </span>
                   </div>
                 </div>
@@ -182,7 +178,7 @@ const Submission = ({ user, onLogout }) => {
               <div className="question-header">
                 <div className="question-meta">
                   <span className="question-number">Question {index + 1}</span>
-                  <span
+                  <span 
                     className="status-badge"
                     style={{ backgroundColor: getStatusColor(submission.status) }}
                   >
@@ -190,10 +186,10 @@ const Submission = ({ user, onLogout }) => {
                   </span>
                 </div>
               </div>
-
+              
               <div className="question-content">
                 <p className="question-text">{submission.question}</p>
-
+                
                 {/* Display all options */}
                 <div className="options-section">
                   <h4>Options:</h4>
@@ -216,7 +212,7 @@ const Submission = ({ user, onLogout }) => {
                     </div>
                   </div>
                 </div>
-
+                
                 <div className="answers-section">
                   <div className="answer-row">
                     <span className="answer-label">Your Answer:</span>
@@ -224,7 +220,7 @@ const Submission = ({ user, onLogout }) => {
                       {getSelectedOptionText(submission)}
                     </span>
                   </div>
-
+                  
                   {submission.status === 0 && (
                     <div className="answer-row">
                       <span className="answer-label">Correct Answer:</span>
