@@ -108,6 +108,14 @@
   color: #5f6368;
 }
 
+.logo-icon {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: float 3s ease-in-out infinite;
+}
+
 .logo-circle {
   width: 32px;
   height: 32px;

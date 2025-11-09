@@ -88,14 +88,14 @@ function AuthPage({ onLogin }) {
         {/* Header */}
         <div className="auth-header">
           <div className="logo">
-            <div className="logo-circle"></div>
-            <span>YourApp</span>
+            <div><i className="fas fa-brain"></i></div>
+            <span>Logic Master</span>
           </div>
           <h1 className="auth-title">
             {isLoginPage ? "Sign in" : "Create your account"}
           </h1>
           <p className="auth-subtitle">
-            {isLoginPage ? "to continue to YourApp" : "to get started with YourApp"}
+            {isLoginPage ? "to continue to LogicMaster" : "to get started with LogicMaster"}
           </p>
         </div>
 
